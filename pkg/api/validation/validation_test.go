@@ -17,9 +17,12 @@
 package validation
 
 import (
-	"github.com/onmetal/machine-controller-manager-provider-onmetal/pkg/api/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/util/validation/field"
+
+	"github.com/onmetal/machine-controller-manager-provider-onmetal/pkg/api/v1alpha1"
+
+	"net/netip"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -29,6 +32,9 @@ import (
 var fldPath *field.Path
 
 var _ = Describe("Machine", func() {
+
+	invalidIP := []byte{100, 40, 210, 8, 8}
+	ip, _ := netip.AddrFromSlice(invalidIP)
 
 	DescribeTable("ValidateProviderSpecAndSecret",
 		func(spec *v1alpha1.ProviderSpec, secret *corev1.Secret, fldPath *field.Path, match types.GomegaMatcher) {
@@ -91,6 +97,15 @@ var _ = Describe("Machine", func() {
 			&corev1.Secret{},
 			fldPath,
 			Not(ContainElement(field.Required(fldPath.Child("spec.prefixname"), "provider spec's prefixname required"))),
+		),
+		Entry("invalid dns server ip",
+			&v1alpha1.ProviderSpec{
+				RootDisk:   &v1alpha1.RootDisk{},
+				DnsServers: []netip.Addr{ip},
+			},
+			&corev1.Secret{},
+			fldPath,
+			Not(ContainElement(field.Invalid(fldPath.Child("spec.dnsservers"), ip, "provider spec's dnsserver valid ip required"))),
 		),
 	)
 })

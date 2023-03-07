@@ -34,6 +34,7 @@ var (
 	},
 	"image": "my-image",
 	"ignitionSecretKey": "ignition.json",
-    "ignition": "passwd:\n  users:\n    - groups: [group1]\n      name: xyz\n      sshAuthorizedKeys: ssh-ed25519 AAABC3NzaC1lZDI1NTE5AAAAIGqrmrq1XwWnPJoSsAeuVcDQNqA5XQK\n      shell: \/bin\/bash"
+    "ignition": "passwd:\n  users:\n    - groups: [group1]\n      name: xyz\n      sshAuthorizedKeys: ssh-ed25519 AAABC3NzaC1lZDI1NTE5AAAAIGqrmrq1XwWnPJoSsAeuVcDQNqA5XQK\n      shell: \/bin\/bash",
+	"dnsServers": ["1.2.3.4","5.6.7.8"]
 }`)
 )
